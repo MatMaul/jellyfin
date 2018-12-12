@@ -34,7 +34,6 @@ using Emby.Server.Implementations.Threading;
 using Emby.Server.Implementations.TV;
 using Emby.Server.Implementations.Updates;
 using Emby.Server.Implementations.Xml;
-using Emby.Server.MediaEncoding.Subtitles;
 using MediaBrowser.Api;
 using MediaBrowser.Common;
 using MediaBrowser.Common.Configuration;
@@ -73,7 +72,7 @@ using MediaBrowser.Controller.Sorting;
 using MediaBrowser.Controller.Subtitles;
 using MediaBrowser.Controller.TV;
 using MediaBrowser.LocalMetadata.Savers;
-using MediaBrowser.MediaEncoding.BdInfo;
+//using MediaBrowser.MediaEncoding.BdInfo;
 using MediaBrowser.Model.Activity;
 using MediaBrowser.Model.Configuration;
 using MediaBrowser.Model.Cryptography;
@@ -926,8 +925,8 @@ namespace Emby.Server.Implementations
 
             TextEncoding = new TextEncoding.TextEncoding(FileSystemManager, LogManager.GetLogger("TextEncoding"), JsonSerializer);
             RegisterSingleInstance(TextEncoding);
-            BlurayExaminer = new BdInfoExaminer(FileSystemManager, TextEncoding);
-            RegisterSingleInstance(BlurayExaminer);
+            //BlurayExaminer = new BdInfoExaminer(FileSystemManager, TextEncoding);
+            //RegisterSingleInstance(BlurayExaminer);
 
             RegisterSingleInstance<IXmlReaderSettingsFactory>(new XmlReaderSettingsFactory());
 
@@ -1038,7 +1037,7 @@ namespace Emby.Server.Implementations
             ChapterManager = new ChapterManager(LibraryManager, LogManager.GetLogger("ChapterManager"), ServerConfigurationManager, ItemRepository);
             RegisterSingleInstance(ChapterManager);
 
-            RegisterMediaEncoder(assemblyInfo);
+            RegisterMediaEncoder();
 
             EncodingManager = new EncodingManager(FileSystemManager, Logger, MediaEncoder, ChapterManager, LibraryManager);
             RegisterSingleInstance(EncodingManager);
@@ -1054,7 +1053,7 @@ namespace Emby.Server.Implementations
             AuthService = new AuthService(UserManager, authContext, ServerConfigurationManager, ConnectManager, SessionManager, NetworkManager);
             RegisterSingleInstance<IAuthService>(AuthService);
 
-            SubtitleEncoder = new SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, ProcessFactory, TextEncoding);
+            SubtitleEncoder = new MediaBrowser.Controller.MediaEncoding.SubtitleEncoder(LibraryManager, LogManager.GetLogger("SubtitleEncoder"), ApplicationPaths, FileSystemManager, MediaEncoder, JsonSerializer, HttpClient, MediaSourceManager, ProcessFactory, TextEncoding);
             RegisterSingleInstance(SubtitleEncoder);
 
             RegisterSingleInstance(CreateResourceFileManager());
@@ -1259,7 +1258,7 @@ namespace Emby.Server.Implementations
         /// Registers the media encoder.
         /// </summary>
         /// <returns>Task.</returns>
-        private void RegisterMediaEncoder(IAssemblyInfo assemblyInfo)
+        private void RegisterMediaEncoder()
         {
             string encoderPath = null;
             string probePath = null;
@@ -1270,7 +1269,7 @@ namespace Emby.Server.Implementations
             probePath = info.ProbePath;
             var hasExternalEncoder = string.Equals(info.Version, "external", StringComparison.OrdinalIgnoreCase);
 
-            var mediaEncoder = new MediaEncoding.Encoder.MediaEncoder(LogManager.GetLogger("MediaEncoder"),
+            var mediaEncoder = new MediaBrowser.Controller.MediaEncoding.MediaEncoder(LogManager.GetLogger("MediaEncoder"),
                 JsonSerializer,
                 encoderPath,
                 probePath,
@@ -1289,8 +1288,8 @@ namespace Emby.Server.Implementations
                 ProcessFactory,
                 EnvironmentInfo,
                 BlurayExaminer,
-                assemblyInfo,
-                this);
+                this
+                );
 
             MediaEncoder = mediaEncoder;
             RegisterSingleInstance(MediaEncoder);
@@ -1775,9 +1774,6 @@ namespace Emby.Server.Implementations
 
             // Emby.Server implementations
             list.Add(GetAssembly(typeof(InstallationManager)));
-
-            // MediaEncoding
-            list.Add(GetAssembly(typeof(MediaEncoding.Encoder.MediaEncoder)));
 
             // Dlna 
             list.Add(GetAssembly(typeof(DlnaEntryPoint)));

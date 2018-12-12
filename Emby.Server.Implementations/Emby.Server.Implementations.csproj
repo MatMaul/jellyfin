@@ -148,10 +148,5 @@
    <EmbeddedResource Include="Localization\Ratings\es.txt" />
    <EmbeddedResource Include="Localization\Ratings\ro.txt" />
  </ItemGroup>
- <ItemGroup>
-   <Reference Include="Emby.Server.MediaEncoding">
-     <HintPath>..\ThirdParty\emby\Emby.Server.MediaEncoding.dll</HintPath>
-   </Reference>
- </ItemGroup>
  
 </Project>

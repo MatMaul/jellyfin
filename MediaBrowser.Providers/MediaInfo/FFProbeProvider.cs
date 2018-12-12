@@ -41,7 +41,7 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly IIsoManager _isoManager;
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IItemRepository _itemRepo;
-        private readonly IBlurayExaminer _blurayExaminer;
+        // private readonly IBlurayExaminer _blurayExaminer;
         private readonly ILocalizationManager _localization;
         private readonly IApplicationPaths _appPaths;
         private readonly IJsonSerializer _json;
@@ -129,13 +129,13 @@ namespace MediaBrowser.Providers.MediaInfo
         }
 
         private SubtitleResolver _subtitleResolver;
-        public FFProbeProvider(ILogger logger, IMediaSourceManager mediaSourceManager, IChannelManager channelManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
+        public FFProbeProvider(ILogger logger, IMediaSourceManager mediaSourceManager, IChannelManager channelManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
         {
             _logger = logger;
             _isoManager = isoManager;
             _mediaEncoder = mediaEncoder;
             _itemRepo = itemRepo;
-            _blurayExaminer = blurayExaminer;
+            //_blurayExaminer = blurayExaminer;
             _localization = localization;
             _appPaths = appPaths;
             _json = json;
@@ -185,7 +185,7 @@ namespace MediaBrowser.Providers.MediaInfo
                 FetchShortcutInfo(item);
             }
 
-            var prober = new FFProbeVideoInfo(_logger, _mediaSourceManager, _isoManager, _mediaEncoder, _itemRepo, _blurayExaminer, _localization, _appPaths, _json, _encodingManager, _fileSystem, _config, _subtitleManager, _chapterManager, _libraryManager);
+            var prober = new FFProbeVideoInfo(_logger, _mediaSourceManager, _isoManager, _mediaEncoder, _itemRepo, _localization, _appPaths, _json, _encodingManager, _fileSystem, _config, _subtitleManager, _chapterManager, _libraryManager);
 
             return prober.ProbeVideo(item, options, cancellationToken);
         }

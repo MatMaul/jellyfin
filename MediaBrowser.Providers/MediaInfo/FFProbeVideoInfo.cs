@@ -36,7 +36,7 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly IIsoManager _isoManager;
         private readonly IMediaEncoder _mediaEncoder;
         private readonly IItemRepository _itemRepo;
-        private readonly IBlurayExaminer _blurayExaminer;
+        //private readonly IBlurayExaminer _blurayExaminer;
         private readonly ILocalizationManager _localization;
         private readonly IApplicationPaths _appPaths;
         private readonly IJsonSerializer _json;
@@ -48,13 +48,13 @@ namespace MediaBrowser.Providers.MediaInfo
         private readonly ILibraryManager _libraryManager;
         private readonly IMediaSourceManager _mediaSourceManager;
 
-        public FFProbeVideoInfo(ILogger logger, IMediaSourceManager mediaSourceManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, IBlurayExaminer blurayExaminer, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
+        public FFProbeVideoInfo(ILogger logger, IMediaSourceManager mediaSourceManager, IIsoManager isoManager, IMediaEncoder mediaEncoder, IItemRepository itemRepo, ILocalizationManager localization, IApplicationPaths appPaths, IJsonSerializer json, IEncodingManager encodingManager, IFileSystem fileSystem, IServerConfigurationManager config, ISubtitleManager subtitleManager, IChapterManager chapterManager, ILibraryManager libraryManager)
         {
             _logger = logger;
             _isoManager = isoManager;
             _mediaEncoder = mediaEncoder;
             _itemRepo = itemRepo;
-            _blurayExaminer = blurayExaminer;
+            //_blurayExaminer = blurayExaminer;
             _localization = localization;
             _appPaths = appPaths;
             _json = json;
@@ -336,15 +336,16 @@ namespace MediaBrowser.Providers.MediaInfo
                 throw new ArgumentNullException("path");
             }
 
-            try
-            {
-                return _blurayExaminer.GetDiscInfo(path);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Error getting BDInfo", ex);
+            // try
+            // {
+            //     return _blurayExaminer.GetDiscInfo(path);
+            // }
+            // catch (Exception ex)
+            // {
+                //_logger.ErrorException("Error getting BDInfo", ex);
+                _logger.Error("Error getting BDInfo");
                 return null;
-            }
+            // }
         }
 
         private void FetchEmbeddedInfo(Video video, Model.MediaInfo.MediaInfo data, MetadataRefreshOptions refreshOptions, LibraryOptions libraryOptions)
@@ -487,7 +488,7 @@ namespace MediaBrowser.Providers.MediaInfo
             var enableSubtitleDownloading = options.MetadataRefreshMode == MetadataRefreshMode.Default ||
                                             options.MetadataRefreshMode == MetadataRefreshMode.FullRefresh;
 
-            var subtitleOptions = GetOptions();
+            //var subtitleOptions = GetOptions();
 
             var libraryOptions = _libraryManager.GetLibraryOptions(video);
 
@@ -499,14 +500,11 @@ namespace MediaBrowser.Providers.MediaInfo
 
             if (libraryOptions.SubtitleDownloadLanguages == null)
             {
-                subtitleDownloadLanguages = subtitleOptions.DownloadLanguages;
-                SkipIfEmbeddedSubtitlesPresent = subtitleOptions.SkipIfEmbeddedSubtitlesPresent;
-                SkipIfAudioTrackMatches = subtitleOptions.SkipIfAudioTrackMatches;
-                RequirePerfectMatch = subtitleOptions.RequirePerfectMatch;
-                enabled = (subtitleOptions.DownloadEpisodeSubtitles &&
-                video is Episode) ||
-                (subtitleOptions.DownloadMovieSubtitles &&
-                video is Movie);
+                subtitleDownloadLanguages = new string [] {"fr", "en"};
+                SkipIfEmbeddedSubtitlesPresent = true;
+                SkipIfAudioTrackMatches = true;
+                RequirePerfectMatch = true;
+                enabled = true;
             }
             else
             {
