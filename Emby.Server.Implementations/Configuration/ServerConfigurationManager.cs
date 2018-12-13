@@ -114,11 +114,14 @@ namespace Emby.Server.Implementations.Configuration
         /// </summary>
         private void UpdateTranscodingTempPath()
         {
-            var encodingConfig = this.GetConfiguration<EncodingOptions>("encoding");
+            // var encodingConfig = this.GetConfiguration<EncodingOptions>("encoding");
 
-            ((ServerApplicationPaths)ApplicationPaths).TranscodingTempPath = string.IsNullOrEmpty(encodingConfig.TranscodingTempPath) ?
-                null :
-                Path.Combine(encodingConfig.TranscodingTempPath, "transcoding-temp");
+            // ((ServerApplicationPaths)ApplicationPaths).TranscodingTempPath = string.IsNullOrEmpty(encodingConfig.TranscodingTempPath) ?
+            //     null :
+            //     Path.Combine(encodingConfig.TranscodingTempPath, "transcoding-temp");
+            ((ServerApplicationPaths)ApplicationPaths).TranscodingTempPath =
+                Path.Combine("/tmp", "jellyfin-transcoding-temp");
+
         }
 
         protected override void OnNamedConfigurationUpdated(string key, object configuration)
